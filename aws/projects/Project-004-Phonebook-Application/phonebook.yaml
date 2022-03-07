@@ -6,15 +6,15 @@ Parameters:
   myVPC:
     Description: Select your VPC
     Type: AWS::EC2::VPC::Id
-​
+
   mySubnets:
     Description: Select at least 2 subnets
     Type: List<AWS::EC2::Subnet::Id>
-​
+
   myKP:
     Description: Select your Key
     Type: AWS::EC2::KeyPair::KeyName
-​
+
   myIT:
     Description: Select instance type
     Type: String
@@ -39,7 +39,7 @@ Mappings:
       AMI: ami-058b1b7fe545997ae
   
 Resources:
-​
+
   myDB:
     Type: 'AWS::RDS::DBInstance'
     Properties:
@@ -52,7 +52,7 @@ Resources:
       EngineVersion: 8.0.19
       MasterUsername: admin
       MasterUserPassword: Pl123456789
-​
+
   myASG:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -77,7 +77,7 @@ Resources:
         PredefinedMetricSpecification:
           PredefinedMetricType: ASGAverageCPUUtilization
         TargetValue: 60.0
-​
+
   myALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -85,7 +85,7 @@ Resources:
         - !GetAtt ALBSecGroup.GroupId
       Subnets: !Ref mySubnets
       Type: application
-​
+
   myListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -95,8 +95,8 @@ Resources:
       LoadBalancerArn: !Ref myALB # Required
       Port: 80
       Protocol: HTTP
-​
-​
+
+
   myLT:
     Type: AWS::EC2::LaunchTemplate
     Properties:
@@ -125,7 +125,7 @@ Resources:
                 cd ..
                 python3 phonebook-app.py
               - MyDBURI: !GetAtt myDB.Endpoint.Address
-​
+
   myTG:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -136,7 +136,7 @@ Resources:
       Protocol: HTTP
       UnhealthyThresholdCount: 2
       VpcId: !Ref myVPC
-​
+
   RDSSecGroup:
     Type: AWS::RDS::DBSecurityGroup
     Properties:
@@ -144,7 +144,7 @@ Resources:
         - CIDRIP: 0.0.0.0/0
         - EC2SecurityGroupId: !GetAtt EC2SecGroup.GroupId
       GroupDescription: This DB for Back-end Access #required
-​
+
   EC2SecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -159,7 +159,7 @@ Resources:
           ToPort: 80
           SourceSecurityGroupId: !GetAtt ALBSecGroup.GroupId
       VpcId: !Ref myVPC
-​
+
   ALBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
